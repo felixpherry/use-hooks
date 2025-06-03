@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import useDocumentTitle from './hooks/001-useDocumentTitle/useDocumentTitle';
+import useToggle from './hooks/003-useToggle/useToggle';
 
 function App() {
-  const [count, setCount] = useState(0);
-  useDocumentTitle(`Clicked ${count} times.`);
+  const [on, toggle] = useToggle();
 
   return (
     <>
@@ -20,9 +18,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <button onClick={() => toggle()}>{on ? 'ON' : 'OFF'}</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
