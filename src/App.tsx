@@ -1,36 +1,35 @@
-import useCopyToClipboard from './hooks/007-useCopyToClipboard/useCopyToClipboard';
+import React from 'react';
+import useInterval from './hooks/008-useInterval/useInterval';
 
-const randomHash = crypto.randomUUID();
+const colors = ['green', 'blue', 'purple', 'red', 'pink', 'beige', 'yellow'];
 export default function App() {
-  const [copiedText, copyToClipboard] = useCopyToClipboard();
-  const hasCopiedText = Boolean(copiedText);
+  const [running, setIsRunning] = React.useState(true);
+  const [index, setIndex] = React.useState(0);
+
+  const clear = useInterval(() => {
+    console.log('inside the interval');
+    setIndex(index + 1);
+  }, 1000);
+
+  const handleStop = () => {
+    clear();
+    setIsRunning(false);
+  };
+
+  const color = colors[index % colors.length];
   return (
     <section>
-      <h1>useCopyToClipboard</h1>
-      <article>
-        <label>Fake API Key</label>
-        <pre>
-          <code>{randomHash}</code>
-          <button
-            disabled={hasCopiedText}
-            className='link'
-            onClick={() => copyToClipboard(randomHash)}
-          >
-            {hasCopiedText ? 'checkIcon' : 'copyIcon'}
-          </button>
-        </pre>
-      </article>
-      {hasCopiedText && (
-        <dialog open={hasCopiedText}>
-          <h4>
-            Copied{' '}
-            <span role='img' aria-label='Celebrate Emoji'>
-              🎉
-            </span>
-          </h4>
-          <textarea placeholder='Paste your copied text' />
-        </dialog>
-      )}
+      <h1>useInterval</h1>
+      <button disabled={!running} className='link' onClick={handleStop}>
+        {running ? 'Stop' : 'Stopped'}
+      </button>
+      <div
+        style={{
+          backgroundColor: color,
+          height: '200px',
+          width: '200px',
+        }}
+      />
     </section>
   );
 }
