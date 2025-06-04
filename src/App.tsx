@@ -1,35 +1,20 @@
-import useWindowSize from './hooks/013-useWindowSize/useWindowSize';
-
-function Browser({ size }: { size: { width: number; height: number } }) {
-  return (
-    <div
-      data-testid='browser'
-      className='browser'
-      style={{ width: size.width / 4, height: size.height / 4 }}
-    />
-  );
-}
+import * as React from 'react';
+import useVisibilityChange from './hooks/014-useVisibilityChange/useVisibilityChange';
 
 export default function App() {
-  const size = useWindowSize();
+  const documentVisible = useVisibilityChange();
+  const [tabAwayCount, setTabAwayCount] = React.useState(0);
+
+  React.useEffect(() => {
+    if (documentVisible === false) {
+      setTabAwayCount((c) => c + 1);
+    }
+  }, [documentVisible]);
 
   return (
     <section>
-      <h1>useWindowSize</h1>
-      <p>Resize the window</p>
-      <table>
-        <tbody>
-          <tr>
-            <th>width</th>
-            <td>{size.width}</td>
-          </tr>
-          <tr>
-            <th>height</th>
-            <td>{size.height}</td>
-          </tr>
-        </tbody>
-      </table>
-      <Browser size={size} />
+      <h1>useVisibilityChange</h1>
+      <div>Tab Away Count: {tabAwayCount}</div>
     </section>
   );
 }
