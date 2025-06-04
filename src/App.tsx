@@ -1,33 +1,43 @@
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import useToggle from './hooks/003-useToggle/useToggle';
+import * as React from 'react';
+import usePrevious from './hooks/004-usePrevious/usePrevious';
 
-function App() {
-  const [on, toggle] = useToggle();
-
-  return (
-    <>
-      <div>
-        <a href='https://vite.dev' target='_blank'>
-          <img src={viteLogo} className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://react.dev' target='_blank'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => toggle()}>{on ? 'ON' : 'OFF'}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+function getRandomColor() {
+  const colors = ['green', 'blue', 'purple', 'red', 'pink'];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
-export default App;
+export default function App() {
+  const [color, setColor] = React.useState(getRandomColor());
+  const previousColor = usePrevious(color);
+
+  const handleClick = () => {
+    function getNewColor() {
+      const newColor = getRandomColor();
+      if (color === newColor) {
+        getNewColor();
+      } else {
+        setColor(newColor);
+      }
+    }
+    getNewColor();
+  };
+
+  return (
+    <section>
+      <h1>usePrevious</h1>
+      <button className='link' onClick={handleClick}>
+        Next
+      </button>
+      <article>
+        <figure>
+          <p style={{ background: `var(--${previousColor})` }} />
+          <figcaption>Previous: {previousColor}</figcaption>
+        </figure>
+        <figure>
+          <p style={{ background: `var(--${color})` }} />
+          <figcaption>Current: {color}</figcaption>
+        </figure>
+      </article>
+    </section>
+  );
+}
