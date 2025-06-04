@@ -1,76 +1,35 @@
-import * as React from 'react';
-import useTimeout from './hooks/012-useTimeout/useTimeout';
+import useWindowSize from './hooks/013-useWindowSize/useWindowSize';
 
-function Bomb({
-  hasExploded,
-  hasDefused,
-  handleClick,
-}: {
-  hasExploded: boolean;
-  hasDefused: boolean;
-  handleClick: () => void;
-}) {
-  if (hasExploded) {
-    return (
-      <figure>
-        <span role='img' aria-label='Explosion Emoji'>
-          💥
-        </span>
-        <figcaption>You lose</figcaption>
-      </figure>
-    );
-  }
-
-  if (hasDefused) {
-    return (
-      <figure>
-        <span role='img' aria-label='Explosion Emoji'>
-          🎉
-        </span>
-        <figcaption>You Win</figcaption>
-      </figure>
-    );
-  }
-
+function Browser({ size }: { size: { width: number; height: number } }) {
   return (
-    <button className='bomb' onClick={handleClick}>
-      <span role='img' aria-label='Dynamite Emoji'>
-        🧨
-      </span>
-    </button>
+    <div
+      data-testid='browser'
+      className='browser'
+      style={{ width: size.width / 4, height: size.height / 4 }}
+    />
   );
 }
 
 export default function App() {
-  const [hasDefused, setHasDefused] = React.useState(false);
-  const [hasExploded, setHasExploded] = React.useState(false);
-
-  const clear = useTimeout(() => {
-    setHasExploded(!hasExploded);
-  }, 1000);
-
-  const handleClick = () => {
-    clear();
-    setHasDefused(true);
-  };
+  const size = useWindowSize();
 
   return (
     <section>
-      <h1>useTimeout</h1>
-      <p>You have 1s to defuse (click) the bomb or it will explode </p>
-      <button
-        className='link'
-        onClick={() => {
-          window.location.reload();
-        }}
-      >
-        Reload
-      </button>
-      <Bomb
-        hasDefused={hasDefused}
-        hasExploded={hasExploded}
-        handleClick={handleClick}
-      />
+      <h1>useWindowSize</h1>
+      <p>Resize the window</p>
+      <table>
+        <tbody>
+          <tr>
+            <th>width</th>
+            <td>{size.width}</td>
+          </tr>
+          <tr>
+            <th>height</th>
+            <td>{size.height}</td>
+          </tr>
+        </tbody>
+      </table>
+      <Browser size={size} />
     </section>
   );
 }
