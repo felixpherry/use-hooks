@@ -1,48 +1,58 @@
-import * as React from 'react';
-import useLockBodyScroll from './hooks/010-useLockBodyScroll/useLockBodyScroll';
+import useQueue from './hooks/011-useQueue/useQueue';
 
-function Modal({ handleClose }: { handleClose: () => void }) {
-  useLockBodyScroll();
+function QueueDemo({
+  first,
+  last,
+  size,
+  queue,
+}: {
+  first?: number;
+  last?: number;
+  size: number;
+  queue: number[];
+}) {
   return (
-    <div>
-      <dialog>
-        <header>
-          <button onClick={handleClose}>X</button>
-          <h2>Modal</h2>
-        </header>
-        <section>content</section>
-      </dialog>
-    </div>
+    <figure>
+      <article>
+        <p>Front</p>
+        <ul>
+          {queue.map((item, i) => {
+            const isFirst = first === item;
+            const isLast = last === item;
+            if (isFirst) {
+              return <li key={i}>First: {item}</li>;
+            }
+            if (isLast) {
+              return <li key={i}>Last: {item}</li>;
+            }
+            return <li key={i}>Item: {item}</li>;
+          })}
+        </ul>
+        <p>Back</p>
+      </article>
+      <figcaption>{size} items in the queue</figcaption>
+    </figure>
   );
 }
 
 export default function App() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { add, remove, clear, first, last, size, queue } = useQueue([1, 2, 3]);
 
   return (
-    <>
-      {isOpen && <Modal handleClose={() => setIsOpen(false)} />}
-      <main>
-        <header>
-          <h1>useLockBodyScroll</h1>
-        </header>
-
-        <button className='primary' onClick={() => setIsOpen(true)}>
-          openModal
+    <div>
+      <header>
+        <h1>UseQueue</h1>
+        <button className='link' onClick={() => add((last || 0) + 1)}>
+          Add
         </button>
-        {['red', 'blue', 'green', 'pink', 'purple', 'yellow'].map((color) => {
-          return (
-            <section
-              key={color}
-              style={{
-                backgroundColor: color,
-                width: '100vw',
-                height: '50vh',
-              }}
-            />
-          );
-        })}
-      </main>
-    </>
+        <button disabled={size === 0} className='link' onClick={() => remove()}>
+          Remove
+        </button>
+        <button disabled={size === 0} className='link' onClick={() => clear()}>
+          Clear
+        </button>
+      </header>
+      <QueueDemo queue={queue} size={size} first={first} last={last} />
+    </div>
   );
 }
