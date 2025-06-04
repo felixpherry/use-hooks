@@ -1,28 +1,48 @@
-import useCounter from './hooks/009-useCounter/useCounter';
+import * as React from 'react';
+import useLockBodyScroll from './hooks/010-useLockBodyScroll/useLockBodyScroll';
+
+function Modal({ handleClose }: { handleClose: () => void }) {
+  useLockBodyScroll();
+  return (
+    <div>
+      <dialog>
+        <header>
+          <button onClick={handleClose}>X</button>
+          <h2>Modal</h2>
+        </header>
+        <section>content</section>
+      </dialog>
+    </div>
+  );
+}
 
 export default function App() {
-  const [count, { increment, decrement, set, reset }] = useCounter(5, {
-    min: 5,
-    max: 10,
-  });
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <section>
-      <h1>UseCounter</h1>
-      <h6>with optional min / max</h6>
-      <button disabled={count >= 10} className='link' onClick={increment}>
-        Increment
-      </button>
-      <button disabled={count <= 5} className='link' onClick={decrement}>
-        Decrement
-      </button>
-      <button className='link' onClick={() => set(6)}>
-        Set to 6
-      </button>
-      <button className='link' onClick={reset}>
-        Reset
-      </button>
-      <p>{count}</p>
-    </section>
+    <>
+      {isOpen && <Modal handleClose={() => setIsOpen(false)} />}
+      <main>
+        <header>
+          <h1>useLockBodyScroll</h1>
+        </header>
+
+        <button className='primary' onClick={() => setIsOpen(true)}>
+          openModal
+        </button>
+        {['red', 'blue', 'green', 'pink', 'purple', 'yellow'].map((color) => {
+          return (
+            <section
+              key={color}
+              style={{
+                backgroundColor: color,
+                width: '100vw',
+                height: '50vh',
+              }}
+            />
+          );
+        })}
+      </main>
+    </>
   );
 }
