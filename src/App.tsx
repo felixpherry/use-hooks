@@ -1,18 +1,20 @@
-import React from 'react';
-import useDebounce from './hooks/017-useDebounce/useDebounce';
+import * as React from 'react';
+import useContinuousRetry from './hooks/018-useContinuousRetry/useContinuousRetry';
 
 export default function App() {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [count, setCount] = React.useState(0);
+  const hasResolved = useContinuousRetry(() => {
+    console.log('retrying');
+    return count > 10;
+  }, 1000);
+
   return (
-    <div>
-      <input
-        type='search'
-        onChange={(e) => setSearchTerm(e.target.value)}
-        value={searchTerm}
-      />
-      <p>{searchTerm}</p>
-      <p>{debouncedSearchTerm}</p>
-    </div>
+    <section>
+      <h1>useContinuousRetry</h1>
+      <button className='primary' onClick={() => setCount(count + 1)}>
+        {count}
+      </button>
+      <pre>{JSON.stringify({ hasResolved, count }, null, 2)}</pre>
+    </section>
   );
 }
